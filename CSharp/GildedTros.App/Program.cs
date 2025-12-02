@@ -49,16 +49,6 @@ namespace GildedTros.App
                 new Item {Name = "Ugly Variable Names", SellIn = 3, Quality = 6}
             };
 
-            var item = new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 15, Quality = 20 })
-            {
-                QualityRules = new List<QualityAdjustmentRule>
-                    {
-                        new QualityAdjustmentRule { DaysThreshold = 0, QualityChangePerDay = 0 },
-                        new QualityAdjustmentRule { DaysThreshold = 5, QualityChangePerDay = 3 },
-                        new QualityAdjustmentRule { DaysThreshold = 10, AbsoluteQuality = 2 }
-                    }
-            };
-
             var app = new GildedTros(Items);
 
 
