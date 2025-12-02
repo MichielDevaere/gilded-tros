@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GildedTros.App.ComplexClasses;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GildedTros.App
@@ -58,62 +59,41 @@ namespace GildedTros.App
                     }
                 }
 
-                if (Items[i].Name != "Backstage passes for Re:factor"
-                    && Items[i].Name != "Backstage passes for HAXX")
+                if (Items[i] is TimeBasedQualityItem timeBasedQualityItem)
                 {
-                    if (Items[i].Quality > 0)
+                    var rule = timeBasedQualityItem.QualityRules.FirstOrDefault(r => Items[i].SellIn <= r.DaysThreshold);
+                    if (rule != null)
                     {
-                        if (Items[i].Name != "B-DAWG Keychain")
+                        if (rule.QualityChangePerDay != null)
                         {
-                            Items[i].Quality = Items[i].Quality - qualityDegradation;
+                            Items[i].Quality += rule.QualityChangePerDay.Value;
                         }
-                    }
-                }
-                else
-                {
-                    if (Items[i].Quality < 50)
-                    {
-                        Items[i].Quality = Items[i].Quality + 1;
-
-                        if (Items[i].Name == "Backstage passes for Re:factor"
-                        || Items[i].Name == "Backstage passes for HAXX")
+                        if (rule.AbsoluteQuality != null)
                         {
-                            if (Items[i].SellIn < 11)
-                            {
-                                Items[i].Quality = Items[i].Quality + 1;
-                            }
-
-                            if (Items[i].SellIn < 6)
-                            {
-                                Items[i].Quality = Items[i].Quality + 1;
-                            }
-                        }
-                    }
-                }
-
-                if (Items[i].Name != "B-DAWG Keychain")
-                {
-                    Items[i].SellIn = Items[i].SellIn - 1;
-                }
-
-                if (Items[i].SellIn < 0)
-                {
-                    if (Items[i].Name != "Backstage passes for Re:factor"
-                        && Items[i].Name != "Backstage passes for HAXX")
-                    {
-                        if (Items[i].Quality > 0)
-                        {
-                            if (Items[i].Name != "B-DAWG Keychain")
-                            {
-                                //Items[i].Quality = Items[i].Quality - 1;
-                            }
+                            Items[i].Quality = rule.AbsoluteQuality.Value;
                         }
                     }
                     else
                     {
-                        Items[i].Quality = Items[i].Quality - Items[i].Quality;
+                        Items[i].Quality = Items[i].Quality + QualityImprovement;
                     }
+                    // TODO remove duplicate code
+                    if (Items[i].Name != "B-DAWG Keychain")
+                    {
+                        Items[i].SellIn = Items[i].SellIn - 1;
+                    }
+                    // TODO remove duplicate code
+                    if (Items[i].Quality > MaxQuality)
+                    {
+                        Items[i].Quality = MaxQuality;
+                    }
+                    continue;
+                }
 
+                if (Items[i].Name != "B-DAWG Keychain")
+                {
+                    Items[i].Quality = Items[i].Quality - qualityDegradation;
+                    Items[i].SellIn = Items[i].SellIn - 1;
                 }
 
                 if (Items[i].Quality < 0 && !ImprovementItems.Contains(Items[i].Name))
