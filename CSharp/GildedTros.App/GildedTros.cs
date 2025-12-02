@@ -35,7 +35,7 @@ namespace GildedTros.App
                 {
                     Items[i].Quality = Items[i].Quality + qualityImprovement;
                     // TODO remove duplicate code
-                    if (Items[i].Name != "B-DAWG Keychain")
+                    if (!LegendaryItems.Contains(Items[i].Name))
                     {
                         Items[i].SellIn = Items[i].SellIn - 1;
                     }
@@ -51,7 +51,7 @@ namespace GildedTros.App
                     if (Items[i].Quality <= 0)
                     {
                         // TODO remove duplicate code
-                        if (Items[i].Name != "B-DAWG Keychain")
+                        if (!LegendaryItems.Contains(Items[i].Name))
                         {
                             Items[i].SellIn = Items[i].SellIn - 1;
                         }
@@ -78,7 +78,7 @@ namespace GildedTros.App
                         Items[i].Quality = Items[i].Quality + QualityImprovement;
                     }
                     // TODO remove duplicate code
-                    if (Items[i].Name != "B-DAWG Keychain")
+                    if (!LegendaryItems.Contains(Items[i].Name))
                     {
                         Items[i].SellIn = Items[i].SellIn - 1;
                     }
@@ -90,7 +90,7 @@ namespace GildedTros.App
                     continue;
                 }
 
-                if (Items[i].Name != "B-DAWG Keychain")
+                if (!LegendaryItems.Contains(Items[i].Name))
                 {
                     Items[i].Quality = Items[i].Quality - qualityDegradation;
                     Items[i].SellIn = Items[i].SellIn - 1;
