@@ -79,7 +79,7 @@ namespace GildedTros.App
             if (item.Quality > quality)
                 item.Quality = quality;
 
-            if (item.Quality < 0 && !(item is ImprovementItem))
+            if (item.Quality < 0 && item is not ImprovementItem)
                 item.Quality = 0;
 
             return;
