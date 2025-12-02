@@ -14,6 +14,16 @@ namespace GildedTros.App
         {
             for (var i = 0; i < Items.Count; i++)
             {
+                if (Items[i].Quality <= 0 && Items[i].Name != "Good Wine")
+                {
+                    // TODO remove duplicate code
+                    if (Items[i].Name != "B-DAWG Keychain")
+                    {
+                        Items[i].SellIn = Items[i].SellIn - 1;
+                    }
+                    continue;
+                }
+
                 if (Items[i].Name != "Good Wine" 
                     && Items[i].Name != "Backstage passes for Re:factor"
                     && Items[i].Name != "Backstage passes for HAXX")
