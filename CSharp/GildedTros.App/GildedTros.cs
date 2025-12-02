@@ -10,8 +10,6 @@ namespace GildedTros.App
         private int QualityDegradation = 1;
         private int QualityImprovement = 1;
         private int MaxQuality = 50;
-        private int MaxQualityLegendary = 80;
-        private string[] LegendaryItems = new[] { "B-DAWG Keychain" };
 
         IList<Item> Items;
         public GildedTros(IList<Item> Items)
@@ -23,9 +21,9 @@ namespace GildedTros.App
         {
             for (var i = 0; i < Items.Count; i++)
             {
-                if (LegendaryItems.Contains(Items[i].Name))
+                if (Items[i] is LegendaryItem)
                 {
-                    ApplyPostUpdateRules(Items[i], true, false);
+                    ApplyPostUpdateRules(Items[i]);
                     continue;
                 }
 
@@ -39,15 +37,15 @@ namespace GildedTros.App
 
                 if (Items[i] is ImprovementItem improvementItem)
                 {
-                    ApplyQualityIncrease(Items[i], improvementItem);
-                    ApplyPostUpdateRules(Items[i], false, false);
+                    ApplyQualityIncrease(Items[i]);
+                    ApplyPostUpdateRules(Items[i]);
                     continue;
                 }
                 else
                 {
                     if (Items[i].Quality <= 0)
                     {
-                        ApplyPostUpdateRules(Items[i], false, false);
+                        ApplyPostUpdateRules(Items[i]);
                         continue;
                     }
                 }
@@ -63,34 +61,40 @@ namespace GildedTros.App
                             Items[i].Quality = rule.AbsoluteQuality.Value;
                     }
                     else
-                        ApplyQualityIncrease(Items[i], timeBasedQualityItem);
+                        ApplyQualityIncrease(Items[i]);
 
-                    ApplyPostUpdateRules(Items[i], false, false);
+                    ApplyPostUpdateRules(Items[i]);
                     continue;
                 }
 
                 Items[i].Quality = Items[i].Quality - qualityDegradation;
-                ApplyPostUpdateRules(Items[i], false, false);
+                ApplyPostUpdateRules(Items[i]);
             }
         }
 
-        private void ApplyPostUpdateRules(Item item, bool isLegendary, bool isImprovement)
+        private void ApplyPostUpdateRules(Item item)
         {
-            if (!isLegendary)
+            var legendaryItem = item as LegendaryItem;
+
+            if (legendaryItem == null)
                 item.SellIn = item.SellIn - 1;
 
-            var maxQuality = LegendaryItems.Contains(item.Name) ? MaxQualityLegendary : MaxQuality;
+            var maxQuality = legendaryItem?.MaxQuality ?? MaxQuality;
             if (item.Quality > maxQuality)
                 item.Quality = maxQuality;
 
-            if (item.Quality < 0 && !isImprovement)
+            if (item.Quality < 0 && !(item is ImprovementItem))
                 item.Quality = 0;
 
             return;
         }
 
-        private void ApplyQualityIncrease(Item item, IQualityImprovement qualityImprovement)
+        private void ApplyQualityIncrease(Item item)
         {
+            var qualityImprovement = item as IQualityImprovement;
+            if (qualityImprovement == null)
+                return;
+
             if (item.SellIn <= 0)
                 item.Quality = item.Quality + qualityImprovement.QualityImprovementPerDayAfterSellIn;
             else

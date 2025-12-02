@@ -14,8 +14,8 @@ namespace GildedTros.App
                 new Item {Name = "Ring of Cleansening Code", SellIn = 10, Quality = 20},
                 new ImprovementItem(new Item { Name = "Good Wine", SellIn = 2, Quality = 0 }),
                 new Item {Name = "Elixir of the SOLID", SellIn = 5, Quality = 7},
-                new Item {Name = "B-DAWG Keychain", SellIn = 0, Quality = 80},
-                new Item {Name = "B-DAWG Keychain", SellIn = -1, Quality = 80},
+                new LegendaryItem(new Item { Name = "B-DAWG Keychain", SellIn = 0, Quality = 80 }),
+                new LegendaryItem(new Item { Name = "B-DAWG Keychain", SellIn = -1, Quality = 80 }),
                 new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 15, Quality = 20 })
                 {
                     QualityRules = new List<QualityAdjustmentRule>
