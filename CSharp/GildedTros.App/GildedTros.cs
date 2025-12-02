@@ -14,6 +14,12 @@ namespace GildedTros.App
         {
             for (var i = 0; i < Items.Count; i++)
             {
+                var qualityDegradation = 1;
+                if (Items[i].SellIn <= 0)
+                {
+                    qualityDegradation = 2;
+                }
+
                 if (Items[i].Quality <= 0 && Items[i].Name != "Good Wine")
                 {
                     // TODO remove duplicate code
@@ -32,7 +38,7 @@ namespace GildedTros.App
                     {
                         if (Items[i].Name != "B-DAWG Keychain")
                         {
-                            Items[i].Quality = Items[i].Quality - 1;
+                            Items[i].Quality = Items[i].Quality - qualityDegradation;
                         }
                     }
                 }
@@ -80,7 +86,7 @@ namespace GildedTros.App
                             {
                                 if (Items[i].Name != "B-DAWG Keychain")
                                 {
-                                    Items[i].Quality = Items[i].Quality - 1;
+                                    //Items[i].Quality = Items[i].Quality - 1;
                                 }
                             }
                         }
@@ -96,6 +102,11 @@ namespace GildedTros.App
                             Items[i].Quality = Items[i].Quality + 1;
                         }
                     }
+                }
+
+                if (Items[i].Quality < 0)
+                {
+                    Items[i].Quality = 0;
                 }
             }
         }
