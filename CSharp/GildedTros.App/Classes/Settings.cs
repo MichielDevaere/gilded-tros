@@ -22,8 +22,7 @@ namespace GildedTros.App.Classes
                 _settings = JsonSerializer.Deserialize<Settings>(json);
 
                 if (_settings == null
-                    || _settings.Degradation == null
-                    || _settings.Improvement == null
+                    || _settings.DefaultDegradation == null
                     || _settings.MaxQuality == 0)
                     throw new JsonException("Invalid settings.json file");
             }
@@ -33,23 +32,20 @@ namespace GildedTros.App.Classes
             }
         }
 
-        public QualityChangeSettings Degradation { get; set; }
-        public QualityChangeSettings Improvement { get; set; }
-
+        public QualityChangeSettings DefaultDegradation { get; set; }
         public int MaxQuality { get; set; }
-        public Dictionary<string, Settings> SpecialItems { get; set; }
+        public Dictionary<string, int> SpecialMaxQuality { get; set; }
 
         public static Settings GetSettings()
         {
             return _settings;
         }
 
-        public static Settings GetSpecialItemSettings(string itemType)
+        public static int GetMaxQuality(string itemType)
         {
-            var deafultSettings = GetSettings();
-            var settings = deafultSettings.SpecialItems.TryGetValue(itemType, out var specialSettings) ? specialSettings : deafultSettings;
-            if (settings.MaxQuality == 0) settings.MaxQuality = deafultSettings.MaxQuality;
-            return settings;
+            var defaultSettings = GetSettings();
+            var maxQuality = defaultSettings.SpecialMaxQuality.TryGetValue(itemType, out var specialSettings) ? specialSettings : defaultSettings.MaxQuality;
+            return maxQuality;
 
         }
     }

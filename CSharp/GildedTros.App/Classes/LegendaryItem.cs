@@ -2,7 +2,7 @@
 
 namespace GildedTros.App.Classes
 {
-    public class LegendaryItem : Item, ISettings
+    public class LegendaryItem : Item, IMaxQuality
     {
         public LegendaryItem(Item item)
         {
@@ -11,6 +11,6 @@ namespace GildedTros.App.Classes
             Quality = item.Quality;
         }
 
-        public Settings Settings => Settings.GetSpecialItemSettings(nameof(LegendaryItem));
+        public int MaxQuality => Settings.GetMaxQuality(nameof(LegendaryItem));
     }
 }

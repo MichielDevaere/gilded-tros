@@ -12,7 +12,13 @@ namespace GildedTros.App
 
             IList<Item> Items = new List<Item>{
                 new() {Name = "Ring of Cleansening Code", SellIn = 10, Quality = 20},
-                new ImprovementItem(new Item { Name = "Good Wine", SellIn = 2, Quality = 0 }),
+                new TimeBasedQualityItem(new Item { Name = "Good Wine", SellIn = 2, Quality = 0 }){
+                        QualityRules = new List<QualityAdjustmentRule>
+                        {
+                            new() { DaysThreshold = 0, QualityChangePerDay = 2 },
+                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
+                        }
+                },
                 new() {Name = "Elixir of the SOLID", SellIn = 5, Quality = 7},
                 new LegendaryItem(new Item { Name = "B-DAWG Keychain", SellIn = 0, Quality = 80 }),
                 new LegendaryItem(new Item { Name = "B-DAWG Keychain", SellIn = -1, Quality = 80 }),
@@ -22,7 +28,8 @@ namespace GildedTros.App
                         {
                             new() { DaysThreshold = 0, AbsoluteQuality = 0 },
                             new() { DaysThreshold = 5, QualityChangePerDay = 3 },
-                            new() { DaysThreshold = 10, QualityChangePerDay = 2 }
+                            new() { DaysThreshold = 10, QualityChangePerDay = 2 },
+                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
                         }
                 },
                 new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 10, Quality = 49 })
@@ -31,7 +38,8 @@ namespace GildedTros.App
                         {
                             new() { DaysThreshold = 0, AbsoluteQuality = 0 },
                             new() { DaysThreshold = 5, QualityChangePerDay = 3 },
-                            new() { DaysThreshold = 10, QualityChangePerDay = 2 }
+                            new() { DaysThreshold = 10, QualityChangePerDay = 2 },
+                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
                         }
                 },
                 new TimeBasedQualityItem(new Item { Name = "Backstage passes for HAXX", SellIn = 5, Quality = 49 })
@@ -40,7 +48,8 @@ namespace GildedTros.App
                         {
                             new() { DaysThreshold = 0, AbsoluteQuality = 0 },
                             new() { DaysThreshold = 5, QualityChangePerDay = 3 },
-                            new() { DaysThreshold = 10, QualityChangePerDay = 2 }
+                            new() { DaysThreshold = 10, QualityChangePerDay = 2 },
+                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
                         }
                 },
                 // these smelly items do not work properly yet

@@ -30,9 +30,6 @@ namespace GildedTros.App
             {
                 case LegendaryItem legendaryItem:
                     return;
-                case ImprovementItem improvementItem:
-                    ApplyQualityIncrease(improvementItem);
-                    return;
                 case TimeBasedQualityItem timeBasedQualityItem:
                     ApplyTimeBasedQualityRule(timeBasedQualityItem);
                     return;
@@ -43,15 +40,6 @@ namespace GildedTros.App
             item.Quality -= GetQualityDegradation(item);
         }
 
-        private void ApplyQualityIncrease(Item item)
-        {
-            var settings = (item as ISettings)?.Settings;
-            if (settings == null)
-                return;
-
-            item.Quality += GetQualityImprovement(item);
-        }
-
         private void ApplyTimeBasedQualityRule(TimeBasedQualityItem item)
         {
             var rule = item.QualityRules
@@ -60,12 +48,10 @@ namespace GildedTros.App
             if (rule != null)
             {
                 if (rule.QualityChangePerDay.HasValue)
-                    item.Quality += rule.QualityChangePerDay.Value;
+                    item.Quality += rule.QualityChangePerDay.Value * (rule.Operation == Operation.Add ? 1 : -1);
                 if (rule.AbsoluteQuality.HasValue)
                     item.Quality = rule.AbsoluteQuality.Value;
             }
-            else
-                ApplyQualityIncrease(item);
         }
 
         private void ApplyPostUpdateRules(Item item)
@@ -73,12 +59,12 @@ namespace GildedTros.App
             if (item is not LegendaryItem)
                 item.SellIn--;
 
-            var maxQuality = item as ISettings;
-            var quality = maxQuality?.Settings.MaxQuality ?? _settings.MaxQuality;
+            var maxQuality = item as IMaxQuality;
+            var quality = maxQuality?.MaxQuality ?? _settings.MaxQuality;
             if (item.Quality > quality)
                 item.Quality = quality;
 
-            if (item.Quality < 0 && item is not ImprovementItem)
+            if (item.Quality < 0)
                 item.Quality = 0;
 
             return;
@@ -86,20 +72,9 @@ namespace GildedTros.App
 
         private int GetQualityDegradation(Item item)
         {
-            var settingsItem = item as ISettings;
-            var qualityDegradation = settingsItem?.Settings?.Degradation?.BeforeSellInExpired ?? _settings.Degradation.BeforeSellInExpired;
             if (item.SellIn <= 0)
-                qualityDegradation = settingsItem?.Settings?.Degradation?.AfterSellInExpired ?? _settings.Degradation.AfterSellInExpired;
-            return qualityDegradation;
-        }
-
-        private int GetQualityImprovement(Item item)
-        {
-            var settingsItem = item as ISettings;
-            var qualityDegradation = settingsItem?.Settings?.Improvement?.BeforeSellInExpired ?? _settings.Improvement.BeforeSellInExpired;
-            if (item.SellIn <= 0)
-                qualityDegradation = settingsItem?.Settings?.Improvement?.AfterSellInExpired ?? _settings.Improvement.AfterSellInExpired;
-            return qualityDegradation;
+                return _settings.DefaultDegradation.AfterSellInExpired;
+            return _settings.DefaultDegradation.BeforeSellInExpired;
         }
     }
 }
