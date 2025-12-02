@@ -2,7 +2,7 @@
 {
     public interface IQualityImprovement
     {
-        public int QualityImprovementPerDay { get; set; } 
+        public int QualityImprovementPerDay { get; set; }
         public int QualityImprovementPerDayAfterSellIn { get; set; }
     }
 }
