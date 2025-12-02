@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace GildedTros.App
 {
@@ -6,6 +7,9 @@ namespace GildedTros.App
     {
         private int QualityDegradation = 1;
         private int QualityImprovement = 1;
+        private int MaxQuality = 50;
+        private int MaxQualityLegendary = 80;
+        private string[] LegendaryItems = new[] { "B-DAWG Keychain" };
 
         IList<Item> Items;
         public GildedTros(IList<Item> Items)
@@ -56,18 +60,12 @@ namespace GildedTros.App
                         {
                             if (Items[i].SellIn < 11)
                             {
-                                if (Items[i].Quality < 50)
-                                {
-                                    Items[i].Quality = Items[i].Quality + QualityImprovement;
-                                }
+                                Items[i].Quality = Items[i].Quality + QualityImprovement;
                             }
 
                             if (Items[i].SellIn < 6)
                             {
-                                if (Items[i].Quality < 50)
-                                {
-                                    Items[i].Quality = Items[i].Quality + QualityImprovement;
-                                }
+                                Items[i].Quality = Items[i].Quality + QualityImprovement;
                             }
                         }
                     }
@@ -100,16 +98,19 @@ namespace GildedTros.App
                     }
                     else
                     {
-                        if (Items[i].Quality < 50)
-                        {
-                            Items[i].Quality = Items[i].Quality + 1;
-                        }
+                        Items[i].Quality = Items[i].Quality + 1;
                     }
                 }
 
                 if (Items[i].Quality < 0)
                 {
                     Items[i].Quality = 0;
+                }
+
+                var maxQuality = LegendaryItems.Contains(Items[i].Name) ? MaxQualityLegendary : MaxQuality;
+                if (Items[i].Quality > maxQuality)
+                {
+                    Items[i].Quality = maxQuality;
                 }
             }
         }
