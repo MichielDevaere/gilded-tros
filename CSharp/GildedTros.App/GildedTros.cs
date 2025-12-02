@@ -18,52 +18,52 @@ namespace GildedTros.App
 
         public void UpdateQuality()
         {
-            for (var i = 0; i < Items.Count; i++)
+            foreach (var item in Items)
             {
-                if (Items[i] is LegendaryItem)
+                if (item is LegendaryItem)
                 {
-                    ApplyPostUpdateRules(Items[i]);
+                    ApplyPostUpdateRules(item);
                     continue;
                 }
 
                 var qualityDegradation = QualityDegradation;
-                if (Items[i].SellIn <= 0)
+                if (item.SellIn <= 0)
                     qualityDegradation = 2;
 
-                if (Items[i] is ImprovementItem improvementItem)
+                if (item is ImprovementItem improvementItem)
                 {
-                    ApplyQualityIncrease(Items[i]);
-                    ApplyPostUpdateRules(Items[i]);
+                    ApplyQualityIncrease(item);
+                    ApplyPostUpdateRules(item);
                     continue;
                 }
                 else
                 {
-                    if (Items[i].Quality <= 0)
+                    if (item.Quality <= 0)
                     {
-                        ApplyPostUpdateRules(Items[i]);
+                        ApplyPostUpdateRules(item);
                         continue;
                     }
                 }
 
-                if (Items[i] is TimeBasedQualityItem timeBasedQualityItem)
+                if (item is TimeBasedQualityItem timeBasedQualityItem)
                 {
-                    var rule = timeBasedQualityItem.QualityRules.FirstOrDefault(r => Items[i].SellIn <= r.DaysThreshold);
+                    var rule = timeBasedQualityItem.QualityRules.FirstOrDefault(r => item.SellIn <= r.DaysThreshold);
                     if (rule != null)
                     {
                         if (rule.QualityChangePerDay != null)
-                            Items[i].Quality += rule.QualityChangePerDay.Value;
+                            item.Quality += rule.QualityChangePerDay.Value;
                         if (rule.AbsoluteQuality != null)
-                            Items[i].Quality = rule.AbsoluteQuality.Value;
+                            item.Quality = rule.AbsoluteQuality.Value;
                     }
                     else
-                        ApplyQualityIncrease(Items[i]);
+                        ApplyQualityIncrease(item);
 
-                    ApplyPostUpdateRules(Items[i]);
+                    ApplyPostUpdateRules(item);
                     continue;
                 }
 
-                Items[i].Quality = Items[i].Quality - qualityDegradation;
-                ApplyPostUpdateRules(Items[i]);
+                item.Quality = item.Quality - qualityDegradation;
+                ApplyPostUpdateRules(item);
             }
         }
 
