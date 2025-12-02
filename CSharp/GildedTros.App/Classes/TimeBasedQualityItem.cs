@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GildedTros.App.Classes
 {
-    public class TimeBasedQualityItem : Item, IQualityImprovement, IMaxQuality
+    public class TimeBasedQualityItem : Item, ISettings
     {
         public TimeBasedQualityItem(Item item)
         {
@@ -12,10 +12,7 @@ namespace GildedTros.App.Classes
             Quality = item.Quality;
         }
         public List<QualityAdjustmentRule> QualityRules { get; set; } = new List<QualityAdjustmentRule>();
-        public int QualityImprovementPerDay { get; set; } = 1;
-        public int QualityImprovementPerDayAfterSellIn { get; set; } = 1;
-        public int MaxQuality { get; set; } = 50;
-
+        public Settings Settings => Settings.GetSpecialItemSettings(nameof(TimeBasedQualityItem));
     }
 
     public class QualityAdjustmentRule

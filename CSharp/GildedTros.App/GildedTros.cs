@@ -7,8 +7,7 @@ namespace GildedTros.App
 {
     public class GildedTros
     {
-        private int QualityDegradation = 1;
-        private int MaxQuality = 50;
+        private Settings _settings = Settings.GetSettings();
 
         IList<Item> Items;
         public GildedTros(IList<Item> Items)
@@ -26,9 +25,10 @@ namespace GildedTros.App
                     continue;
                 }
 
-                var qualityDegradation = QualityDegradation;
+                var settingsItem = item as ISettings;
+                var qualityDegradation = settingsItem?.Settings?.Degradation?.BeforeSellInExpired ?? _settings.Degradation.BeforeSellInExpired;
                 if (item.SellIn <= 0)
-                    qualityDegradation = 2;
+                    qualityDegradation = settingsItem?.Settings?.Degradation?.AfterSellInExpired ?? _settings.Degradation.AfterSellInExpired;
 
                 if (item is ImprovementItem improvementItem)
                 {
@@ -74,8 +74,8 @@ namespace GildedTros.App
             if (legendaryItem == null)
                 item.SellIn = item.SellIn - 1;
 
-            var maxQuality = item as IMaxQuality;
-            var quality = legendaryItem?.MaxQuality ?? maxQuality?.MaxQuality ?? MaxQuality;
+            var maxQuality = item as ISettings;
+            var quality = maxQuality?.Settings.MaxQuality ?? _settings.MaxQuality;
             if (item.Quality > quality)
                 item.Quality = quality;
 
@@ -87,14 +87,14 @@ namespace GildedTros.App
 
         private void ApplyQualityIncrease(Item item)
         {
-            var qualityImprovement = item as IQualityImprovement;
-            if (qualityImprovement == null)
+            var settings = (item as ISettings)?.Settings;
+            if (settings == null)
                 return;
 
             if (item.SellIn <= 0)
-                item.Quality = item.Quality + qualityImprovement.QualityImprovementPerDayAfterSellIn;
+                item.Quality = item.Quality + settings.Improvement.AfterSellInExpired;
             else
-                item.Quality = item.Quality + qualityImprovement.QualityImprovementPerDay;
+                item.Quality = item.Quality + settings.Improvement.BeforeSellInExpired;
         }
     }
 }

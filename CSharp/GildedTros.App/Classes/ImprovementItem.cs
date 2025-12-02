@@ -2,7 +2,7 @@
 
 namespace GildedTros.App.Classes
 {
-    public class ImprovementItem : Item, IQualityImprovement, IMaxQuality
+    public class ImprovementItem : Item, ISettings
     {
         public ImprovementItem(Item item)
         {
@@ -10,10 +10,7 @@ namespace GildedTros.App.Classes
             SellIn = item.SellIn;
             Quality = item.Quality;
         }
-
-        public int QualityImprovementPerDay { get; set; } = 1;
-        public int QualityImprovementPerDayAfterSellIn { get; set; } = 2;
-        public int MaxQuality { get; set; } = 50;
+        public Settings Settings => Settings.GetSpecialItemSettings(nameof(ImprovementItem));
 
     }
 }

@@ -1,0 +1,22 @@
+{
+  "Degradation": {
+    "BeforeSellInExpired": 1,
+    "AfterSellInExpired": 2
+  },
+  "Improvement": {
+    "BeforeSellInExpired": 1,
+    "AfterSellInExpired": 1
+  },
+  "MaxQuality": 50,
+  "SpecialItems": {
+    "LegendaryItem": {
+      "MaxQuality": 80
+    },
+    "ImprovementItem": {
+      "Improvement": {
+        "BeforeSellInExpired": 1,
+        "AfterSellInExpired": 2
+      }
+    }
+  }
+}
