@@ -1,7 +1,6 @@
-﻿using GildedTros.App.ComplexClasses;
+﻿using GildedTros.App.Classes;
 using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
 
 namespace GildedTros.App
 {
@@ -13,7 +12,7 @@ namespace GildedTros.App
 
             IList<Item> Items = new List<Item>{
                 new Item {Name = "Ring of Cleansening Code", SellIn = 10, Quality = 20},
-                new Item {Name = "Good Wine", SellIn = 2, Quality = 0},
+                new ImprovementItem(new Item { Name = "Good Wine", SellIn = 2, Quality = 0 }),
                 new Item {Name = "Elixir of the SOLID", SellIn = 5, Quality = 7},
                 new Item {Name = "B-DAWG Keychain", SellIn = 0, Quality = 80},
                 new Item {Name = "B-DAWG Keychain", SellIn = -1, Quality = 80},

@@ -1,4 +1,5 @@
-﻿using GildedTros.App.ComplexClasses;
+﻿using GildedTros.App.Classes;
+using GildedTros.App.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +12,6 @@ namespace GildedTros.App
         private int MaxQuality = 50;
         private int MaxQualityLegendary = 80;
         private string[] LegendaryItems = new[] { "B-DAWG Keychain" };
-        private string[] ImprovementItems = new[] { "Good Wine" };
 
         IList<Item> Items;
         public GildedTros(IList<Item> Items)
@@ -37,10 +37,10 @@ namespace GildedTros.App
                     qualityImprovement = 2;
                 }
 
-                if (ImprovementItems.Contains(Items[i].Name))
+                if (Items[i] is ImprovementItem improvementItem)
                 {
-                    Items[i].Quality = Items[i].Quality + qualityImprovement;
-                    ApplyPostUpdateRules(Items[i], false, true);
+                    ApplyQualityIncrease(Items[i], improvementItem);
+                    ApplyPostUpdateRules(Items[i], false, false);
                     continue;
                 }
                 else
@@ -63,7 +63,7 @@ namespace GildedTros.App
                             Items[i].Quality = rule.AbsoluteQuality.Value;
                     }
                     else
-                        Items[i].Quality = Items[i].Quality + QualityImprovement;
+                        ApplyQualityIncrease(Items[i], timeBasedQualityItem);
 
                     ApplyPostUpdateRules(Items[i], false, false);
                     continue;
@@ -87,6 +87,14 @@ namespace GildedTros.App
                 item.Quality = 0;
 
             return;
+        }
+
+        private void ApplyQualityIncrease(Item item, IQualityImprovement qualityImprovement)
+        {
+            if (item.SellIn <= 0)
+                item.Quality = item.Quality + qualityImprovement.QualityImprovementPerDayAfterSellIn;
+            else
+                item.Quality = item.Quality + qualityImprovement.QualityImprovementPerDay;
         }
     }
 }

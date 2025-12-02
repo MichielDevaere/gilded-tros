@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using GildedTros.App.Interfaces;
+using System.Collections.Generic;
 
-namespace GildedTros.App.ComplexClasses
+namespace GildedTros.App.Classes
 {
-    public class TimeBasedQualityItem : Item
+    public class TimeBasedQualityItem : Item, IQualityImprovement
     {
         public TimeBasedQualityItem(Item item)
         {
@@ -12,7 +13,7 @@ namespace GildedTros.App.ComplexClasses
         }
         public List<QualityAdjustmentRule> QualityRules { get; set; } = new List<QualityAdjustmentRule>();
         public int QualityImprovementPerDay { get; set; } = 1;
-
+        public int QualityImprovementPerDayAfterSellIn { get; set; } = 1;
     }
 
     public class QualityAdjustmentRule
