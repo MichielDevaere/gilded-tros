@@ -10,6 +10,7 @@ namespace GildedTros.App
         private int MaxQuality = 50;
         private int MaxQualityLegendary = 80;
         private string[] LegendaryItems = new[] { "B-DAWG Keychain" };
+        private string[] ImprovementItems = new[] { "Good Wine" };
 
         IList<Item> Items;
         public GildedTros(IList<Item> Items)
@@ -22,23 +23,42 @@ namespace GildedTros.App
             for (var i = 0; i < Items.Count; i++)
             {
                 var qualityDegradation = QualityDegradation;
+                var qualityImprovement = QualityImprovement;
                 if (Items[i].SellIn <= 0)
                 {
                     qualityDegradation = 2;
+                    qualityImprovement = 2;
                 }
 
-                if (Items[i].Quality <= 0 && Items[i].Name != "Good Wine")
+                if (ImprovementItems.Contains(Items[i].Name))
                 {
+                    Items[i].Quality = Items[i].Quality + qualityImprovement;
                     // TODO remove duplicate code
                     if (Items[i].Name != "B-DAWG Keychain")
                     {
                         Items[i].SellIn = Items[i].SellIn - 1;
                     }
+                    // TODO remove duplicate code
+                    if (Items[i].Quality > MaxQuality)
+                    {
+                        Items[i].Quality = MaxQuality;
+                    }
                     continue;
                 }
+                else
+                {
+                    if (Items[i].Quality <= 0)
+                    {
+                        // TODO remove duplicate code
+                        if (Items[i].Name != "B-DAWG Keychain")
+                        {
+                            Items[i].SellIn = Items[i].SellIn - 1;
+                        }
+                        continue;
+                    }
+                }
 
-                if (Items[i].Name != "Good Wine" 
-                    && Items[i].Name != "Backstage passes for Re:factor"
+                if (Items[i].Name != "Backstage passes for Re:factor"
                     && Items[i].Name != "Backstage passes for HAXX")
                 {
                     if (Items[i].Quality > 0)
@@ -60,12 +80,12 @@ namespace GildedTros.App
                         {
                             if (Items[i].SellIn < 11)
                             {
-                                Items[i].Quality = Items[i].Quality + QualityImprovement;
+                                Items[i].Quality = Items[i].Quality + 1;
                             }
 
                             if (Items[i].SellIn < 6)
                             {
-                                Items[i].Quality = Items[i].Quality + QualityImprovement;
+                                Items[i].Quality = Items[i].Quality + 1;
                             }
                         }
                     }
@@ -78,31 +98,25 @@ namespace GildedTros.App
 
                 if (Items[i].SellIn < 0)
                 {
-                    if (Items[i].Name != "Good Wine")
+                    if (Items[i].Name != "Backstage passes for Re:factor"
+                        && Items[i].Name != "Backstage passes for HAXX")
                     {
-                        if (Items[i].Name != "Backstage passes for Re:factor"
-                            && Items[i].Name != "Backstage passes for HAXX")
+                        if (Items[i].Quality > 0)
                         {
-                            if (Items[i].Quality > 0)
+                            if (Items[i].Name != "B-DAWG Keychain")
                             {
-                                if (Items[i].Name != "B-DAWG Keychain")
-                                {
-                                    //Items[i].Quality = Items[i].Quality - 1;
-                                }
+                                //Items[i].Quality = Items[i].Quality - 1;
                             }
-                        }
-                        else
-                        {
-                            Items[i].Quality = Items[i].Quality - Items[i].Quality;
                         }
                     }
                     else
                     {
-                        Items[i].Quality = Items[i].Quality + 1;
+                        Items[i].Quality = Items[i].Quality - Items[i].Quality;
                     }
+
                 }
 
-                if (Items[i].Quality < 0)
+                if (Items[i].Quality < 0 && !ImprovementItems.Contains(Items[i].Name))
                 {
                     Items[i].Quality = 0;
                 }
