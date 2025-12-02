@@ -4,6 +4,9 @@ namespace GildedTros.App
 {
     public class GildedTros
     {
+        private int QualityDegradation = 1;
+        private int QualityImprovement = 1;
+
         IList<Item> Items;
         public GildedTros(IList<Item> Items)
         {
@@ -14,7 +17,7 @@ namespace GildedTros.App
         {
             for (var i = 0; i < Items.Count; i++)
             {
-                var qualityDegradation = 1;
+                var qualityDegradation = QualityDegradation;
                 if (Items[i].SellIn <= 0)
                 {
                     qualityDegradation = 2;
@@ -55,7 +58,7 @@ namespace GildedTros.App
                             {
                                 if (Items[i].Quality < 50)
                                 {
-                                    Items[i].Quality = Items[i].Quality + 1;
+                                    Items[i].Quality = Items[i].Quality + QualityImprovement;
                                 }
                             }
 
@@ -63,7 +66,7 @@ namespace GildedTros.App
                             {
                                 if (Items[i].Quality < 50)
                                 {
-                                    Items[i].Quality = Items[i].Quality + 1;
+                                    Items[i].Quality = Items[i].Quality + QualityImprovement;
                                 }
                             }
                         }
