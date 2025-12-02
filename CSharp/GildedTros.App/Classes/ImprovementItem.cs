@@ -11,6 +11,5 @@ namespace GildedTros.App.Classes
             Quality = item.Quality;
         }
         public Settings Settings => Settings.GetSpecialItemSettings(nameof(ImprovementItem));
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using GildedTros.App.Interfaces;
-using System.Linq;
 
 namespace GildedTros.App.Classes
 {
@@ -10,7 +9,6 @@ namespace GildedTros.App.Classes
             Name = item.Name;
             SellIn = item.SellIn;
             Quality = item.Quality;
-
         }
 
         public Settings Settings => Settings.GetSpecialItemSettings(nameof(LegendaryItem));

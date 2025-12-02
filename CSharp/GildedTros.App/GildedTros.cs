@@ -7,9 +7,9 @@ namespace GildedTros.App
 {
     public class GildedTros
     {
-        private Settings _settings = Settings.GetSettings();
+        private readonly Settings _settings = Settings.GetSettings();
 
-        IList<Item> Items;
+        private readonly IList<Item> Items;
         public GildedTros(IList<Item> Items)
         {
             this.Items = Items;
@@ -19,60 +19,59 @@ namespace GildedTros.App
         {
             foreach (var item in Items)
             {
-                if (item is LegendaryItem)
-                {
-                    ApplyPostUpdateRules(item);
-                    continue;
-                }
-
-                var settingsItem = item as ISettings;
-                var qualityDegradation = settingsItem?.Settings?.Degradation?.BeforeSellInExpired ?? _settings.Degradation.BeforeSellInExpired;
-                if (item.SellIn <= 0)
-                    qualityDegradation = settingsItem?.Settings?.Degradation?.AfterSellInExpired ?? _settings.Degradation.AfterSellInExpired;
-
-                if (item is ImprovementItem improvementItem)
-                {
-                    ApplyQualityIncrease(item);
-                    ApplyPostUpdateRules(item);
-                    continue;
-                }
-                else
-                {
-                    if (item.Quality <= 0)
-                    {
-                        ApplyPostUpdateRules(item);
-                        continue;
-                    }
-                }
-
-                if (item is TimeBasedQualityItem timeBasedQualityItem)
-                {
-                    var rule = timeBasedQualityItem.QualityRules.FirstOrDefault(r => item.SellIn <= r.DaysThreshold);
-                    if (rule != null)
-                    {
-                        if (rule.QualityChangePerDay != null)
-                            item.Quality += rule.QualityChangePerDay.Value;
-                        if (rule.AbsoluteQuality != null)
-                            item.Quality = rule.AbsoluteQuality.Value;
-                    }
-                    else
-                        ApplyQualityIncrease(item);
-
-                    ApplyPostUpdateRules(item);
-                    continue;
-                }
-
-                item.Quality = item.Quality - qualityDegradation;
+                UpdateQualityOnItem(item);
                 ApplyPostUpdateRules(item);
             }
         }
 
+        private void UpdateQualityOnItem(Item item)
+        {
+            switch (item)
+            {
+                case LegendaryItem legendaryItem:
+                    return;
+                case ImprovementItem improvementItem:
+                    ApplyQualityIncrease(improvementItem);
+                    return;
+                case TimeBasedQualityItem timeBasedQualityItem:
+                    ApplyTimeBasedQualityRule(timeBasedQualityItem);
+                    return;
+            }
+
+            if (item.Quality <= 0) return;
+
+            item.Quality -= GetQualityDegradation(item);
+        }
+
+        private void ApplyQualityIncrease(Item item)
+        {
+            var settings = (item as ISettings)?.Settings;
+            if (settings == null)
+                return;
+
+            item.Quality += GetQualityImprovement(item);
+        }
+
+        private void ApplyTimeBasedQualityRule(TimeBasedQualityItem item)
+        {
+            var rule = item.QualityRules
+                .FirstOrDefault(r => item.SellIn <= r.DaysThreshold);
+
+            if (rule != null)
+            {
+                if (rule.QualityChangePerDay.HasValue)
+                    item.Quality += rule.QualityChangePerDay.Value;
+                if (rule.AbsoluteQuality.HasValue)
+                    item.Quality = rule.AbsoluteQuality.Value;
+            }
+            else
+                ApplyQualityIncrease(item);
+        }
+
         private void ApplyPostUpdateRules(Item item)
         {
-            var legendaryItem = item as LegendaryItem;
-
-            if (legendaryItem == null)
-                item.SellIn = item.SellIn - 1;
+            if (item is not LegendaryItem)
+                item.SellIn--;
 
             var maxQuality = item as ISettings;
             var quality = maxQuality?.Settings.MaxQuality ?? _settings.MaxQuality;
@@ -85,16 +84,22 @@ namespace GildedTros.App
             return;
         }
 
-        private void ApplyQualityIncrease(Item item)
+        private int GetQualityDegradation(Item item)
         {
-            var settings = (item as ISettings)?.Settings;
-            if (settings == null)
-                return;
-
+            var settingsItem = item as ISettings;
+            var qualityDegradation = settingsItem?.Settings?.Degradation?.BeforeSellInExpired ?? _settings.Degradation.BeforeSellInExpired;
             if (item.SellIn <= 0)
-                item.Quality = item.Quality + settings.Improvement.AfterSellInExpired;
-            else
-                item.Quality = item.Quality + settings.Improvement.BeforeSellInExpired;
+                qualityDegradation = settingsItem?.Settings?.Degradation?.AfterSellInExpired ?? _settings.Degradation.AfterSellInExpired;
+            return qualityDegradation;
+        }
+
+        private int GetQualityImprovement(Item item)
+        {
+            var settingsItem = item as ISettings;
+            var qualityDegradation = settingsItem?.Settings?.Improvement?.BeforeSellInExpired ?? _settings.Improvement.BeforeSellInExpired;
+            if (item.SellIn <= 0)
+                qualityDegradation = settingsItem?.Settings?.Improvement?.AfterSellInExpired ?? _settings.Improvement.AfterSellInExpired;
+            return qualityDegradation;
         }
     }
 }

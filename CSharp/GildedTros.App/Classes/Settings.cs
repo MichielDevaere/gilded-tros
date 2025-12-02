@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime;
 using System.Text.Json;
 
 namespace GildedTros.App.Classes
@@ -50,7 +49,6 @@ namespace GildedTros.App.Classes
             var deafultSettings = GetSettings();
             var settings = deafultSettings.SpecialItems.TryGetValue(itemType, out var specialSettings) ? specialSettings : deafultSettings;
             if (settings.MaxQuality == 0) settings.MaxQuality = deafultSettings.MaxQuality;
-
             return settings;
 
         }
