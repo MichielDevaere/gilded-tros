@@ -23,6 +23,12 @@ namespace GildedTros.App
         {
             for (var i = 0; i < Items.Count; i++)
             {
+                if (LegendaryItems.Contains(Items[i].Name))
+                {
+                    ApplyPostUpdateRules(Items[i], true, false);
+                    continue;
+                }
+
                 var qualityDegradation = QualityDegradation;
                 var qualityImprovement = QualityImprovement;
                 if (Items[i].SellIn <= 0)
@@ -34,27 +40,14 @@ namespace GildedTros.App
                 if (ImprovementItems.Contains(Items[i].Name))
                 {
                     Items[i].Quality = Items[i].Quality + qualityImprovement;
-                    // TODO remove duplicate code
-                    if (!LegendaryItems.Contains(Items[i].Name))
-                    {
-                        Items[i].SellIn = Items[i].SellIn - 1;
-                    }
-                    // TODO remove duplicate code
-                    if (Items[i].Quality > MaxQuality)
-                    {
-                        Items[i].Quality = MaxQuality;
-                    }
+                    ApplyPostUpdateRules(Items[i], false, true);
                     continue;
                 }
                 else
                 {
                     if (Items[i].Quality <= 0)
                     {
-                        // TODO remove duplicate code
-                        if (!LegendaryItems.Contains(Items[i].Name))
-                        {
-                            Items[i].SellIn = Items[i].SellIn - 1;
-                        }
+                        ApplyPostUpdateRules(Items[i], false, false);
                         continue;
                     }
                 }
@@ -65,48 +58,35 @@ namespace GildedTros.App
                     if (rule != null)
                     {
                         if (rule.QualityChangePerDay != null)
-                        {
                             Items[i].Quality += rule.QualityChangePerDay.Value;
-                        }
                         if (rule.AbsoluteQuality != null)
-                        {
                             Items[i].Quality = rule.AbsoluteQuality.Value;
-                        }
                     }
                     else
-                    {
                         Items[i].Quality = Items[i].Quality + QualityImprovement;
-                    }
-                    // TODO remove duplicate code
-                    if (!LegendaryItems.Contains(Items[i].Name))
-                    {
-                        Items[i].SellIn = Items[i].SellIn - 1;
-                    }
-                    // TODO remove duplicate code
-                    if (Items[i].Quality > MaxQuality)
-                    {
-                        Items[i].Quality = MaxQuality;
-                    }
+
+                    ApplyPostUpdateRules(Items[i], false, false);
                     continue;
                 }
 
-                if (!LegendaryItems.Contains(Items[i].Name))
-                {
-                    Items[i].Quality = Items[i].Quality - qualityDegradation;
-                    Items[i].SellIn = Items[i].SellIn - 1;
-                }
-
-                if (Items[i].Quality < 0 && !ImprovementItems.Contains(Items[i].Name))
-                {
-                    Items[i].Quality = 0;
-                }
-
-                var maxQuality = LegendaryItems.Contains(Items[i].Name) ? MaxQualityLegendary : MaxQuality;
-                if (Items[i].Quality > maxQuality)
-                {
-                    Items[i].Quality = maxQuality;
-                }
+                Items[i].Quality = Items[i].Quality - qualityDegradation;
+                ApplyPostUpdateRules(Items[i], false, false);
             }
+        }
+
+        private void ApplyPostUpdateRules(Item item, bool isLegendary, bool isImprovement)
+        {
+            if (!isLegendary)
+                item.SellIn = item.SellIn - 1;
+
+            var maxQuality = LegendaryItems.Contains(item.Name) ? MaxQualityLegendary : MaxQuality;
+            if (item.Quality > maxQuality)
+                item.Quality = maxQuality;
+
+            if (item.Quality < 0 && !isImprovement)
+                item.Quality = 0;
+
+            return;
         }
     }
 }
