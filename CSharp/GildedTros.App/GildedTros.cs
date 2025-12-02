@@ -8,7 +8,6 @@ namespace GildedTros.App
     public class GildedTros
     {
         private int QualityDegradation = 1;
-        private int QualityImprovement = 1;
         private int MaxQuality = 50;
 
         IList<Item> Items;
@@ -28,12 +27,8 @@ namespace GildedTros.App
                 }
 
                 var qualityDegradation = QualityDegradation;
-                var qualityImprovement = QualityImprovement;
                 if (Items[i].SellIn <= 0)
-                {
                     qualityDegradation = 2;
-                    qualityImprovement = 2;
-                }
 
                 if (Items[i] is ImprovementItem improvementItem)
                 {
@@ -79,9 +74,10 @@ namespace GildedTros.App
             if (legendaryItem == null)
                 item.SellIn = item.SellIn - 1;
 
-            var maxQuality = legendaryItem?.MaxQuality ?? MaxQuality;
-            if (item.Quality > maxQuality)
-                item.Quality = maxQuality;
+            var maxQuality = item as IMaxQuality;
+            var quality = legendaryItem?.MaxQuality ?? maxQuality?.MaxQuality ?? MaxQuality;
+            if (item.Quality > quality)
+                item.Quality = quality;
 
             if (item.Quality < 0 && !(item is ImprovementItem))
                 item.Quality = 0;
