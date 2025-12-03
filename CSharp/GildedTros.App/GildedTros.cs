@@ -32,12 +32,12 @@ namespace GildedTros.App
                     return;
                 case TimeBasedQualityItem timeBasedQualityItem:
                     var skip = ApplyTimeBasedQualityRule(timeBasedQualityItem);
-                    if (skip) 
+                    if (skip)
                         return;
                     break;
             }
 
-            if (item.Quality <= 0) 
+            if (item.Quality <= 0)
                 return;
 
             item.Quality -= GetQualityDegradation(item);

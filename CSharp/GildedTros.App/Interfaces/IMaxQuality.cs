@@ -1,6 +1,4 @@
-﻿using GildedTros.App.Classes;
-
-namespace GildedTros.App.Interfaces
+﻿namespace GildedTros.App.Interfaces
 {
     public interface IMaxQuality
     {

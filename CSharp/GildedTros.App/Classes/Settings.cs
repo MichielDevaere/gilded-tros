@@ -4,7 +4,6 @@ using System.Text.Json;
 
 namespace GildedTros.App.Classes
 {
-
     public class QualityChangeSettings
     {
         public int BeforeSellInExpired { get; set; }
