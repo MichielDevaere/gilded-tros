@@ -2,20 +2,8 @@
 
 namespace GildedTros.App.Classes
 {
-    public class LegendaryItem : Item, IMaxQuality
+    public class LegendaryItem : ComplexItem
     {
-        public LegendaryItem(Item item)
-        {
-            Name = item.Name;
-            SellIn = item.SellIn;
-            Quality = item.Quality;
-        }
-
-        private int? _maxQuality;
-        public int MaxQuality
-        {
-            get => _maxQuality ?? Settings.GetMaxQuality(nameof(LegendaryItem));
-            set => _maxQuality = value;
-        }
+        public LegendaryItem(Item item) : base(item) { }
     }
 }

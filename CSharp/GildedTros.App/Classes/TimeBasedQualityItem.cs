@@ -3,22 +3,11 @@ using System.Collections.Generic;
 
 namespace GildedTros.App.Classes
 {
-    public class TimeBasedQualityItem : Item, IMaxQuality
+    public class TimeBasedQualityItem : ComplexItem
     {
-        public TimeBasedQualityItem(Item item)
-        {
-            Name = item.Name;
-            SellIn = item.SellIn;
-            Quality = item.Quality;
-        }
-        public List<QualityAdjustmentRule> QualityRules { get; set; } = new List<QualityAdjustmentRule>();
+        public TimeBasedQualityItem(Item item) : base(item) { }
 
-        private int? _maxQuality;
-        public int MaxQuality
-        {
-            get => _maxQuality ?? Settings.GetMaxQuality(nameof(TimeBasedQualityItem));
-            set => _maxQuality = value;
-        }
+        public List<QualityAdjustmentRule> QualityRules { get; set; } = new List<QualityAdjustmentRule>();
     }
 
     public class QualityAdjustmentRule
