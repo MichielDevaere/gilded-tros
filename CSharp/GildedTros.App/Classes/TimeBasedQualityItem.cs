@@ -25,7 +25,7 @@ namespace GildedTros.App.Classes
 
     public enum Operation
     {
-        Subtrack,
+        Subtract,
         Add
     }
 }
