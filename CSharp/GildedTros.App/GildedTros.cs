@@ -31,27 +31,24 @@ namespace GildedTros.App
                 case LegendaryItem legendaryItem:
                     return;
                 case TimeBasedQualityItem timeBasedQualityItem:
-                    ApplyTimeBasedQualityRule(timeBasedQualityItem);
-                    return;
+                    var skip = ApplyTimeBasedQualityRule(timeBasedQualityItem);
+                    if (skip) 
+                        return;
+                    break;
             }
 
-            if (item.Quality <= 0) return;
+            if (item.Quality <= 0) 
+                return;
 
             item.Quality -= GetQualityDegradation(item);
         }
 
-        private void ApplyTimeBasedQualityRule(TimeBasedQualityItem item)
+        private static bool ApplyTimeBasedQualityRule(TimeBasedQualityItem item)
         {
-            var rule = item.QualityRules
-                .FirstOrDefault(r => item.SellIn >= r.From &&  item.SellIn <= r.To);
-
-            if (rule != null)
-            {
-                if (rule.QualityChangePerDay.HasValue)
-                    item.Quality += rule.QualityChangePerDay.Value * (rule.Operation == Operation.Add ? 1 : -1);
-                if (rule.AbsoluteQuality.HasValue)
-                    item.Quality = rule.AbsoluteQuality.Value;
-            }
+            var rule = item.QualityRules.FirstOrDefault(r => r.IsInRange(item.SellIn));
+            if (rule == null) return false;
+            item.Quality = rule.CalculateQualityChange(item.Quality);
+            return true;
         }
 
         private void ApplyPostUpdateRules(Item item)
