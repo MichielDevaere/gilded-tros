@@ -10,48 +10,29 @@ namespace GildedTros.App
         {
             Console.WriteLine("OMGHAI!");
 
+            var qualityRulesForPasses = new List<QualityAdjustmentRule>
+            {
+                new() { From = int.MinValue, To = 0, AbsoluteQuality = 0 },
+                new() { From = 1, To = 5, QualityChangePerDay = 3 },
+                new() { From = 6, To = 10, QualityChangePerDay = 2 },
+                new() { From = 11, To = int.MaxValue, QualityChangePerDay = 1 },
+            };
+
             IList<Item> Items = new List<Item>{
                 new() {Name = "Ring of Cleansening Code", SellIn = 10, Quality = 20},
                 new TimeBasedQualityItem(new Item { Name = "Good Wine", SellIn = 2, Quality = 0 }){
                         QualityRules = new List<QualityAdjustmentRule>
                         {
-                            new() { DaysThreshold = 0, QualityChangePerDay = 2 },
-                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
+                            new() { From = int.MinValue, To = 0, QualityChangePerDay = 2 },
+                            new() { From = 1, To = int.MaxValue, QualityChangePerDay = 1 },
                         }
                 },
                 new() {Name = "Elixir of the SOLID", SellIn = 5, Quality = 7},
                 new LegendaryItem(new Item { Name = "B-DAWG Keychain", SellIn = 0, Quality = 80 }),
                 new LegendaryItem(new Item { Name = "B-DAWG Keychain", SellIn = -1, Quality = 80 }),
-                new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 15, Quality = 20 })
-                {
-                    QualityRules = new List<QualityAdjustmentRule>
-                        {
-                            new() { DaysThreshold = 0, AbsoluteQuality = 0 },
-                            new() { DaysThreshold = 5, QualityChangePerDay = 3 },
-                            new() { DaysThreshold = 10, QualityChangePerDay = 2 },
-                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
-                        }
-                },
-                new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 10, Quality = 49 })
-                {
-                    QualityRules = new List<QualityAdjustmentRule>
-                        {
-                            new() { DaysThreshold = 0, AbsoluteQuality = 0 },
-                            new() { DaysThreshold = 5, QualityChangePerDay = 3 },
-                            new() { DaysThreshold = 10, QualityChangePerDay = 2 },
-                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
-                        }
-                },
-                new TimeBasedQualityItem(new Item { Name = "Backstage passes for HAXX", SellIn = 5, Quality = 49 })
-                {
-                    QualityRules = new List<QualityAdjustmentRule>
-                        {
-                            new() { DaysThreshold = 0, AbsoluteQuality = 0 },
-                            new() { DaysThreshold = 5, QualityChangePerDay = 3 },
-                            new() { DaysThreshold = 10, QualityChangePerDay = 2 },
-                            new() { DaysThreshold = int.MaxValue, QualityChangePerDay = 1 },
-                        }
-                },
+                new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 15, Quality = 20 }){ QualityRules = qualityRulesForPasses },
+                new TimeBasedQualityItem(new Item { Name = "Backstage passes for Re:factor", SellIn = 10, Quality = 49 }){ QualityRules = qualityRulesForPasses },
+                new TimeBasedQualityItem(new Item { Name = "Backstage passes for HAXX", SellIn = 5, Quality = 49 }){ QualityRules = qualityRulesForPasses },
                 // these smelly items do not work properly yet
                 new() {Name = "Duplicate Code", SellIn = 3, Quality = 6},
                 new() {Name = "Long Methods", SellIn = 3, Quality = 6},

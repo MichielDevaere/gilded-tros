@@ -23,7 +23,9 @@ namespace GildedTros.App.Classes
 
     public class QualityAdjustmentRule
     {
-        public int DaysThreshold { get; set; }
+        public int From { get; set; }
+        public int To { get; set; }
+
         public int? QualityChangePerDay { get; set; }
         public Operation? Operation { get; set; } = Classes.Operation.Add;
         public int? AbsoluteQuality { get; set; }

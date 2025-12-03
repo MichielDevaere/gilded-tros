@@ -43,7 +43,7 @@ namespace GildedTros.App
         private void ApplyTimeBasedQualityRule(TimeBasedQualityItem item)
         {
             var rule = item.QualityRules
-                .FirstOrDefault(r => item.SellIn <= r.DaysThreshold);
+                .FirstOrDefault(r => item.SellIn >= r.From &&  item.SellIn <= r.To);
 
             if (rule != null)
             {
