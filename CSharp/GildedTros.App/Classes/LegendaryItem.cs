@@ -11,6 +11,11 @@ namespace GildedTros.App.Classes
             Quality = item.Quality;
         }
 
-        public int MaxQuality => Settings.GetMaxQuality(nameof(LegendaryItem));
+        private int? _maxQuality;
+        public int MaxQuality
+        {
+            get => _maxQuality ?? Settings.GetMaxQuality(nameof(LegendaryItem));
+            set => _maxQuality = value;
+        }
     }
 }

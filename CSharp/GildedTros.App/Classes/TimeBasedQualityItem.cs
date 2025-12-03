@@ -12,7 +12,13 @@ namespace GildedTros.App.Classes
             Quality = item.Quality;
         }
         public List<QualityAdjustmentRule> QualityRules { get; set; } = new List<QualityAdjustmentRule>();
-        public int MaxQuality => Settings.GetMaxQuality(nameof(TimeBasedQualityItem));
+
+        private int? _maxQuality;
+        public int MaxQuality
+        {
+            get => _maxQuality ?? Settings.GetMaxQuality(nameof(TimeBasedQualityItem));
+            set => _maxQuality = value;
+        }
     }
 
     public class QualityAdjustmentRule
